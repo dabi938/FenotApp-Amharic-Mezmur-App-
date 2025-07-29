@@ -1,0 +1,12 @@
+export { default as መዓዛ_አፈዋት } from './መዓዛ አፈዋት.js';
+export { default as ማርያም_ጎየይኪ } from './ማርያም ጎየይኪ.js';
+export { default as ምስለ_ሚካኤል } from './ምስለ ሚካኤል.js';
+export { default as ረሀበ_ወጽምአ } from './ረሀበ ወጽምአ.js';
+export { default as አክሊለ_ጽጌ } from './አክሊለ ጽጌ.js';
+export { default as አፈ_ንብ } from './አፈ ንብ.js';
+export { default as ኢየሀፍር } from './ኢየሀፍር.js';
+export { default as እስከ_ማዕዜኑ } from './እስከ ማዕዜኑ.js';
+export { default as እንዘ_ተሐሕፊዮ } from './እንዘ ተሐሕፊዮ.js';
+export { default as ከመ_ጽጌ_ሮማን } from './ከመ ጽጌ ሮማን.js';
+export { default as ከማሃ_ኃዘን_ወተሰዶ } from './ከማሃ ኃዘን ወተሰዶ.js';
+export { default as ድንግል_መከራሽን } from './ድንግል መከራሽን.js';
