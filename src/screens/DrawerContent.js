@@ -29,6 +29,7 @@ export default function DrawerContent({ navigation }) {
 
   return (
     <View style={[styles.root, { backgroundColor: darkMode ? '#111' : '#fff' }]}>
+      {/* Header Section */}
       <LinearGradient
         colors={darkMode ? ['#232526', '#414345'] : ['#e0eafc', '#cfdef3']}
         style={styles.drawerHeader}
@@ -43,24 +44,24 @@ export default function DrawerContent({ navigation }) {
         <Text style={[styles.drawerTitle, darkMode && { color: '#ffd700' }]}>Welcome!</Text>
       </LinearGradient>
 
-      <DrawerContentScrollView contentContainerStyle={styles.container}>
-        {/* 🔍 Search Input */}
-        <View style={styles.searchRow}>
-          <Ionicons
-            name="search"
-            size={22}
-            color={darkMode ? '#fff' : '#333'}
-          />
-          <TextInput
-            style={[styles.searchInput, darkMode && { color: '#fff' }]}
-            placeholder="Search All Poems"
-            placeholderTextColor={darkMode ? '#888' : '#999'}
-            value={search}
-            onChangeText={setSearch}
-          />
-        </View>
+      {/* Fixed Search Section */}
+      <View style={styles.searchRow}>
+        <Ionicons
+          name="search"
+          size={22}
+          color={darkMode ? '#fff' : '#333'}
+        />
+        <TextInput
+          style={[styles.searchInput, darkMode && { color: '#fff' }]}
+          placeholder="Search All Poems"
+          placeholderTextColor={darkMode ? '#888' : '#999'}
+          value={search}
+          onChangeText={setSearch}
+        />
+      </View>
 
-        {/* Search results or categories */}
+      {/* Scrollable Content */}
+      <DrawerContentScrollView contentContainerStyle={styles.container}>
         {search.length > 0
           ? filteredPoems.map(poem => (
               <DrawerItem
@@ -70,9 +71,7 @@ export default function DrawerContent({ navigation }) {
                     {poem.title}
                   </Text>
                 )}
-                onPress={() =>
-                  navigation.navigate('Reader', { poem })
-                }
+                onPress={() => navigation.navigate('Reader', { poem })}
                 style={darkMode ? { backgroundColor: 'transparent' } : null}
               />
             ))
@@ -84,9 +83,7 @@ export default function DrawerContent({ navigation }) {
                     {cat}
                   </Text>
                 )}
-                onPress={() =>
-                  navigation.navigate('Category', { category: cat })
-                }
+                onPress={() => navigation.navigate('Category', { category: cat })}
                 style={darkMode ? { backgroundColor: 'transparent' } : null}
               />
             ))}
@@ -103,7 +100,7 @@ export default function DrawerContent({ navigation }) {
         />
       </DrawerContentScrollView>
 
-      {/* Theme toggle */}
+      {/*Theme Toggle */}
       <View style={styles.themeToggleRow}>
         <TouchableOpacity onPress={toggleDarkMode} style={styles.themeToggleBtn}>
           <Ionicons
@@ -111,10 +108,6 @@ export default function DrawerContent({ navigation }) {
             size={26}
             color={darkMode ? '#ffd700' : '#333'}
           />
-          {/* A Text which is displayed after the Mode Icon  */}
-          {/* <Text style={[styles.themeToggleText, darkMode && { color: '#fff' }]}>
-            {darkMode ? 'Bright' : 'Dark'} Mode
-          </Text> */}
         </TouchableOpacity>
       </View>
     </View>
@@ -123,7 +116,9 @@ export default function DrawerContent({ navigation }) {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  container: { paddingTop: 10, paddingBottom: 60 },
+  container: {
+    paddingBottom: 60,
+  },
   searchRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -131,7 +126,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
-    marginBottom: 10
+    backgroundColor: 'transparent',
   },
   searchInput: {
     flex: 1,
