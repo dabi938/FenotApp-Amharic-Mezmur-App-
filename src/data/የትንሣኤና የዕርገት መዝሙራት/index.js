@@ -1,3 +1,4 @@
+export { default as ሂዱ_ንገሩ_አውሩ_ለዓለም } from './ሂዱ ንገሩ አውሩ ለዓለም.js';
 export { default as መንፈስ_ቅዱስ } from './መንፈስ ቅዱስ.js';
 export { default as ትንሳኤከ } from './ትንሳኤከ.js';
 export { default as አማን_በአማን } from './አማን በአማን.js';

@@ -9,6 +9,7 @@ export { default as በኃይለ_መስቀሉ } from './በኃይለ መስቀ�
 export { default as በወንጌሉ } from './በወንጌሉ.js';
 export { default as ብርሃን_ወጣ } from './ብርሃን ወጣ.js';
 export { default as እሌኒ_ንግስት } from './እሌኒ ንግስት.js';
+export { default as እሰይ_እልል_በሉ } from './እሰይ እልል በሉ.js';
 export { default as እንተ_ተሐንፀት } from './እንተ ተሐንፀት.js';
 export { default as ኧኧ_በመስቀልከ } from './ኧኧ በመስቀልከ.js';
 export { default as ወሪዶ } from './ወሪዶ.js';

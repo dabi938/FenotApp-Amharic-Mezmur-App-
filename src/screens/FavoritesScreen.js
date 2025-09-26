@@ -38,7 +38,7 @@ export default function FavoritesScreen({ navigation }) {
           </TouchableOpacity>
         )}
         ListEmptyComponent={
-          <Text style={[styles.emptyText, darkMode && { color: '#aaa' }]}>No favorite poems yet.</Text>
+          <Text style={[styles.emptyText, darkMode && { color: '#aaa' }]}>No favorite mezmur yet.</Text>
         }
       />
     </View>

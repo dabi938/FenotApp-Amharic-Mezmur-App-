@@ -1,4 +1,5 @@
 export { default as ለዘተወልደ } from './ለዘተወልደ.js';
+export { default as ሐዋርያት_አበው } from './ሐዋርያት አበው.js';
 export { default as መድኃኒነ_ተወልደ_ነዋ } from './መድኃኒነ ተወልደ ነዋ.js';
 export { default as ስብሐት_ለእግዚአብሔር } from './ስብሐት ለእግዚአብሔር.js';
 export { default as በበረት_የተኛው } from './በበረት የተኛው.js';

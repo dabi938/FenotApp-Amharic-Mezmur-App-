@@ -1,21 +1,15 @@
-// AppNavigator.js
-import React, { useState, useEffect, useRef } from 'react';
-import {
-  StatusBar,
-  Platform,
-  BackHandler,
-  ToastAndroid,
-} from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import SplashScreen from '../screens/SplashScreen';
-import ReaderScreen from '../screens/ReaderScreen';
-import CategoryScreen from '../screens/CategoryScreen';
-import DrawerContent from '../screens/DrawerContent';
-import FavoritesScreen from '../screens/FavoritesScreen';
-import SearchScreen from '../screens/SearchScreen';
-import defaultPoem from '../data/የመስከረም10 መዝሙራት/መድኃኒት.js';
-import { useTheme } from '../context/ThemeContext';
+import React, { useState, useEffect, useRef } from "react";
+import { StatusBar, Platform, BackHandler, ToastAndroid } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import SplashScreen from "../screens/SplashScreen";
+import ReaderScreen from "../screens/ReaderScreen";
+import CategoryScreen from "../screens/CategoryScreen";
+import DrawerContent from "../screens/DrawerContent";
+import FavoritesScreen from "../screens/FavoritesScreen";
+import SearchScreen from "../screens/SearchScreen";
+import defaultPoem from "../data/የመስከረም10 መዝሙራት/መድኃኒት.js";
+import { useTheme } from "../context/ThemeContext";
 
 const Drawer = createDrawerNavigator();
 
@@ -23,15 +17,23 @@ export default function AppNavigator() {
   const [showSplash, setShowSplash] = useState(true);
   const { darkMode } = useTheme();
   const backPressCount = useRef(0);
-
   const navigationRef = useRef();
 
-  // Back button handling (double press to quit from any screen)
+  // Back button handling (navigate back in stack first)
   useEffect(() => {
     const backAction = () => {
+      const navigation = navigationRef.current;
+
+      if (navigation && navigation.canGoBack()) {
+        // Navigate to previous screen in stack
+        navigation.goBack();
+        return true;
+      }
+
+      // If at root, handle double press to exit
       if (backPressCount.current === 0) {
         backPressCount.current += 1;
-        ToastAndroid.show('Press back again to exit', ToastAndroid.SHORT);
+        ToastAndroid.show("Press back again to exit", ToastAndroid.SHORT);
 
         setTimeout(() => {
           backPressCount.current = 0;
@@ -45,7 +47,7 @@ export default function AppNavigator() {
     };
 
     const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
+      "hardwareBackPress",
       backAction
     );
 
@@ -59,9 +61,9 @@ export default function AppNavigator() {
   return (
     <>
       <StatusBar
-        barStyle={darkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={darkMode ? '#111' : '#fff'}
-        translucent={Platform.OS === 'android'}
+        barStyle={darkMode ? "light-content" : "dark-content"}
+        backgroundColor={darkMode ? "#111" : "#fff"}
+        translucent={Platform.OS === "android"}
       />
       <NavigationContainer ref={navigationRef}>
         <Drawer.Navigator
