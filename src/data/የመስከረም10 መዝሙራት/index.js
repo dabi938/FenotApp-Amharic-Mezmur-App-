@@ -1,0 +1,14 @@
+export { default as መድኃኒት } from './መድኃኒት.js';
+export { default as ማርታ_ለአባ_ቴዎድሮስ } from './ማርታ ለአባ ቴዎድሮስ.js';
+export { default as ማርያም_ወላዲተ_ቃል } from './ማርያም ወላዲተ ቃል.js';
+export { default as በጼዴንያ_ማርያም } from './በጼዴንያ ማርያም.js';
+export { default as በጼዴንያ_አብርሂ } from './በጼዴንያ አብርሂ.js';
+export { default as ቡርክት_አንቲ } from './ቡርክት አንቲ.js';
+export { default as አንቺ_ፄዴንያ } from './አንቺ ፄዴንያ.js';
+export { default as አይ_ይዕቲ_ዛቲ } from './አይ ይዕቲ ዛቲ.js';
+export { default as እንደ_ማርታ } from './እንደ ማርታ.js';
+export { default as ኧኸ_ወለተ_ጊዮርጊስ } from './ኧኸ ወለተ ጊዮርጊስ.js';
+export { default as ወንጌላዊ_ሉቃስ } from './ወንጌላዊ ሉቃስ.js';
+export { default as ዝንቱ_ኩሉ_ኮነ } from './ዝንቱ ኩሉ ኮነ.js';
+export { default as ጼዴንያ_ማርያም } from './ጼዴንያ ማርያም.js';
+export { default as ፄዴንያ_አማልጂኝ } from './ፄዴንያ አማልጂኝ.js';
