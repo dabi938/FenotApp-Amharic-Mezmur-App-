@@ -78,9 +78,9 @@ export default function ReaderScreen() {
     // eslint-disable-next-line
   }, [initialIndex, poemList.length]);
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item, index }) => (
     <View style={{ width }}>
-      <PoemViewer poem={item} />
+      <PoemViewer poem={item} isActive={index === currentIndex} />
     </View>
   );
 
