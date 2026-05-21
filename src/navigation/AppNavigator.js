@@ -69,6 +69,7 @@ export default function AppNavigator() {
       <NavigationContainer ref={navigationRef}>
         <Drawer.Navigator
           initialRouteName="Reader"
+          defaultStatus="open"
           drawerContent={(props) => <DrawerContent {...props} />}
           screenOptions={{ headerShown: true }}
         >

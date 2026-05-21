@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -12,11 +12,20 @@ import { Ionicons } from "@expo/vector-icons";
 import { poems, categories } from "../data";
 import { useTheme } from "../context/ThemeContext";
 import { LinearGradient } from "expo-linear-gradient";
+import * as Animatable from "react-native-animatable";
 import profileImg from "../../assets/images/profile.jpg";
 
 export default function DrawerContent({ navigation }) {
   const [search, setSearch] = useState("");
   const { darkMode, toggleDarkMode } = useTheme();
+  const iconRef = useRef(null);
+
+  // Trigger animation when theme changes
+  useEffect(() => {
+    if (iconRef.current) {
+      iconRef.current.animate("rotate", 500);
+    }
+  }, [darkMode]);
 
   const filteredPoems = poems.filter((poem) => {
     const text = [
@@ -131,11 +140,13 @@ export default function DrawerContent({ navigation }) {
           onPress={toggleDarkMode}
           style={styles.themeToggleBtn}
         >
-          <Ionicons
-            name={darkMode ? "sunny" : "moon"}
-            size={26}
-            color={darkMode ? "#ffd700" : "#333"}
-          />
+          <Animatable.View ref={iconRef}>
+            <Ionicons
+              name={darkMode ? "sunny" : "moon"}
+              size={26}
+              color={darkMode ? "#ffd700" : "#333"}
+            />
+          </Animatable.View>
         </TouchableOpacity>
       </View>
     </View>
