@@ -6,6 +6,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  Dimensions,
+  StatusBar,
 } from "react-native";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
@@ -13,22 +15,30 @@ import { poems, categories } from "../data";
 import { useTheme } from "../context/ThemeContext";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Animatable from "react-native-animatable";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import profileImg from "../../assets/images/profile.jpg";
+
+const { width } = Dimensions.get("window");
 
 export default function DrawerContent({ navigation }) {
   const [search, setSearch] = useState("");
-  const { darkMode, toggleDarkMode } = useTheme();
+  const { darkMode, theme, toggleDarkMode } = useTheme();
   const iconRef = useRef(null);
+  const insets = useSafeAreaInsets();
 
-  // Trigger animation when theme changes
   useEffect(() => {
     if (iconRef.current) {
       iconRef.current.animate("rotate", 500);
     }
   }, [darkMode]);
 
+  const filteredCategories = categories.filter(cat => 
+    cat?.toLowerCase().includes(search.toLowerCase())
+  );
+
   const filteredPoems = poems.filter((poem) => {
     const text = [
+      poem.displayId,
       poem.title,
       poem.author || "",
       Array.isArray(poem.content) ? poem.content.join(" ") : "",
@@ -36,14 +46,17 @@ export default function DrawerContent({ navigation }) {
     return text.toLowerCase().includes(search.toLowerCase());
   });
 
+  const handleNavigate = (routeName, params) => {
+    navigation.navigate(routeName, params);
+    navigation.closeDrawer();
+  };
+
   return (
-    <View
-      style={[styles.root, { backgroundColor: darkMode ? "#111" : "#fff" }]}
-    >
+    <View style={[styles.root, { backgroundColor: theme.background }]}>
       {/* Header Section */}
       <LinearGradient
-        colors={darkMode ? ["#232526", "#414345"] : ["#e0eafc", "#cfdef3"]}
-        style={styles.drawerHeader}
+        colors={darkMode ? ["#1a1a1a", "#000"] : ["#8B0000", "#B8860B"]}
+        style={[styles.drawerHeader, { paddingTop: (insets.top || StatusBar.currentHeight || 0) + 40 }]}
       >
         <View style={styles.avatarCircle}>
           <Image
@@ -52,94 +65,70 @@ export default function DrawerContent({ navigation }) {
             resizeMode="cover"
           />
         </View>
-        <Text style={[styles.drawerTitle, darkMode && { color: "#ffd700" }]}>
+        <Text style={[styles.drawerTitle, { color: darkMode ? "#ffd700" : "#fff" }]}>
           እንኳን ደህና መጡ!
         </Text>
       </LinearGradient>
 
-      {/* Search Section with Clear Button */}
-      <View style={styles.searchRow}>
-        <Ionicons name="search" size={22} color={darkMode ? "#fff" : "#333"} />
+      {/* Basic Search Bar */}
+      <View style={[styles.searchRow, { borderBottomColor: theme.border }]}>
+        <Ionicons name="search" size={22} color={theme.textSecondary} />
         <TextInput
-          style={[styles.searchInput, darkMode && { color: "#fff" }]}
-          placeholder="Search All Mezmure"
-          placeholderTextColor={darkMode ? "#888" : "#999"}
+          style={[styles.searchInput, { color: theme.text }]}
+          placeholder="Search Mezmure"
+          placeholderTextColor={theme.textSecondary}
           value={search}
           onChangeText={setSearch}
         />
         {search.length > 0 && (
           <TouchableOpacity onPress={() => setSearch("")}>
-            <Ionicons
-              name="close-circle"
-              size={20}
-              color={darkMode ? "#fff" : "#333"}
-            />
+            <Ionicons name="close-circle" size={20} color={theme.textSecondary} />
           </TouchableOpacity>
         )}
       </View>
 
-      {/* Scrollable Content */}
-      <DrawerContentScrollView
+      <DrawerContentScrollView 
         contentContainerStyle={styles.container}
-        style={{ paddingTop: 0, marginTop: 0 }}
+        style={styles.scrollView}
       >
         {search.length > 0
-          ? filteredPoems.map((poem) => (
+          ? filteredPoems.map((poem, index) => (
               <DrawerItem
-                key={poem.id}
+                key={`poem-${poem.displayId || index}`}
                 label={() => (
-                  <Text style={[styles.label, darkMode && { color: "#fff" }]}>
-                    {poem.title}
+                  <Text style={[styles.label, { color: theme.text }]}>
+                    {poem.displayId}. {poem.title}
                   </Text>
                 )}
-                onPress={() => navigation.navigate("Reader", { poem })}
-                style={darkMode ? { backgroundColor: "transparent" } : null}
+                onPress={() => handleNavigate("Reader", { poem })}
+                icon={() => <Ionicons name="musical-note" size={20} color={theme.primary} />}
               />
             ))
-          : categories.map((cat) => (
+          : filteredCategories.map((cat, index) => (
               <DrawerItem
-                key={cat}
+                key={`cat-${cat}-${index}`}
                 label={() => (
-                  <Text style={[styles.label, darkMode && { color: "#fff" }]}>
+                  <Text style={[styles.label, { color: theme.text }]}>
                     {cat}
                   </Text>
                 )}
-                onPress={() =>
-                  navigation.navigate("Category", { category: cat })
-                }
-                style={darkMode ? { backgroundColor: "transparent" } : null}
+                onPress={() => handleNavigate("Category", { category: cat })}
+                icon={() => <Ionicons name="folder-open" size={20} color={theme.primary} />}
               />
             ))}
 
-        {/* Favorites */}
+        <View style={[styles.footerDivider, { backgroundColor: theme.border }]} />
+        
         <DrawerItem
-          label={() => (
-            <Text style={[styles.label, darkMode && { color: "#fff" }]}>
-              Favorites
-            </Text>
-          )}
-          onPress={() => navigation.navigate("Favorites")}
-          style={darkMode ? { backgroundColor: "transparent" } : null}
-        />
-
-        {/* About Us */}
-        <DrawerItem
-          label={() => (
-            <Text style={[styles.label, darkMode && { color: "#fff" }]}>
-              About Us
-            </Text>
-          )}
-          onPress={() => navigation.navigate("AboutUs")}
-          style={darkMode ? { backgroundColor: "transparent" } : null}
+          label={() => <Text style={[styles.label, { color: theme.text }]}>Favorites & About</Text>}
+          onPress={() => handleNavigate("Library")}
+          icon={() => <Ionicons name="grid-outline" size={20} color={theme.primary} />}
         />
       </DrawerContentScrollView>
 
-      {/* Theme Toggle */}
-      <View style={styles.themeToggleRow}>
-        <TouchableOpacity
-          onPress={toggleDarkMode}
-          style={styles.themeToggleBtn}
-        >
+      {/* Theme Toggle - Original Style */}
+      <View style={[styles.themeToggleRow, { top: (insets.top || StatusBar.currentHeight || 0) + 20 }]}>
+        <TouchableOpacity onPress={toggleDarkMode} style={styles.themeToggleBtn}>
           <Animatable.View ref={iconRef}>
             <Ionicons
               name={darkMode ? "sunny" : "moon"}
@@ -156,68 +145,67 @@ export default function DrawerContent({ navigation }) {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   container: {
-    paddingBottom: 60,
+    paddingBottom: 30,
     paddingTop: 0,
   },
-  searchRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 18,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
-    backgroundColor: "transparent",
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 14,
-    marginLeft: 10,
-    fontWeight: "500",
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
-  },
-  themeToggleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    position: "absolute",
-    right: 20,
-    top: 122,
-  },
-  themeToggleBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 8,
-    borderRadius: 20,
-    backgroundColor: "transparent",
+  scrollView: {
+    paddingTop: 0,
+    marginTop: 0,
   },
   drawerHeader: {
     alignItems: "center",
-    paddingVertical: 32,
-    borderBottomLeftRadius: 32,
-    borderBottomRightRadius: 32,
-    marginBottom: 0,
+    paddingBottom: 25,
+    borderBottomLeftRadius: 25,
+    borderBottomRightRadius: 25,
   },
   avatarCircle: {
     width: 70,
     height: 70,
-    borderRadius: 40,
-    backgroundColor: "#fff8",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 7,
-    marginTop: 25,
+    borderRadius: 35,
+    borderWidth: 2,
+    borderColor: "#fff",
+    overflow: "hidden",
+    marginBottom: 10,
+    backgroundColor: "#eee",
   },
   avatarImage: {
     width: "100%",
     height: "100%",
-    borderRadius: 40,
   },
   drawerTitle: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: "bold",
-    color: "#333",
+  },
+  searchRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 15,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+  },
+  searchInput: {
+    flex: 1,
+    marginLeft: 10,
+    fontSize: 15,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  footerDivider: {
+    height: 1,
+    marginVertical: 10,
+    marginHorizontal: 15,
+  },
+  themeToggleRow: {
+    position: "absolute",
+    right: 15,
+    top: 40,
+    zIndex: 10,
+  },
+  themeToggleBtn: {
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: "rgba(255,255,255,0.1)",
   },
 });

@@ -16,127 +16,111 @@ export default function CategoryScreen({ route, navigation }) {
   const { category } = route.params;
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
-  const { darkMode } = useTheme();
+  const { theme } = useTheme();
 
   useLayoutEffect(() => {
     navigation.setOptions({
       title: category,
       headerStyle: {
-        backgroundColor: darkMode ? "#111" : "#fff",
+        backgroundColor: theme.background,
       },
-      headerTintColor: darkMode ? "#fff" : "#222",
+      headerTintColor: theme.text,
       headerTitleStyle: {
-        color: darkMode ? "#fff" : "#222",
+        fontWeight: "bold",
       },
+      headerRight: () => (
+        <TouchableOpacity 
+          onPress={() => setShowSearch(!showSearch)}
+          style={{ marginRight: 20 }}
+        >
+          <Ionicons
+            name={showSearch ? "close" : "search"}
+            size={24}
+            color={theme.primary}
+          />
+        </TouchableOpacity>
+      ),
     });
-  }, [navigation, darkMode, category]);
+  }, [navigation, theme, category, showSearch]);
 
   const filteredPoems = poems
     .filter((poem) => poem.category === category)
     .filter((poem) => poem.title.toLowerCase().includes(search.toLowerCase()));
 
-  return (
-    <View style={[styles.container, darkMode && { backgroundColor: "#111" }]}>
-      <View style={styles.headerRow}>
-        <Text style={[styles.header, darkMode && { color: "#fff" }]}>
-          {category}
+  const renderItem = ({ item, index }) => (
+    <Animatable.View animation="fadeInUp" delay={index * 30}>
+      <TouchableOpacity
+        activeOpacity={0.6}
+        onPress={() => navigation.navigate("Reader", { poem: item })}
+        style={[styles.itemRow, { borderBottomColor: theme.border }]}
+      >
+        <Ionicons name="musical-note" size={20} color={theme.primary} style={styles.rowIcon} />
+        <Text style={[styles.itemTitle, { color: theme.text }]}>
+          {item.displayId}. {item.title}
         </Text>
-        <TouchableOpacity onPress={() => setShowSearch(!showSearch)}>
-          <Ionicons
-            name="search"
-            size={24}
-            color={darkMode ? "#fff" : "#333"}
-          />
-        </TouchableOpacity>
-      </View>
+        <Ionicons name="chevron-forward" size={16} color={theme.textSecondary} />
+      </TouchableOpacity>
+    </Animatable.View>
+  );
 
+  return (
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       {showSearch && (
-        <View style={styles.searchContainer}>
+        <View style={[styles.searchBox, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+          <Ionicons name="search" size={20} color={theme.textSecondary} />
           <TextInput
-            placeholder="Search Mezmurs..."
-            placeholderTextColor={darkMode ? "#ccc" : "#888"}
+            placeholder="Search in category..."
+            placeholderTextColor={theme.textSecondary}
             value={search}
             onChangeText={setSearch}
-            style={[
-              styles.searchInput,
-              darkMode && {
-                backgroundColor: "#222",
-                color: "#fff",
-                borderColor: "#444",
-              },
-            ]}
+            autoFocus
+            style={[styles.searchInput, { color: theme.text }]}
           />
-          {search.length > 0 && (
-            <TouchableOpacity
-              onPress={() => setSearch("")}
-              style={styles.clearBtn}
-            >
-              <Ionicons
-                name="close-circle"
-                size={20}
-                color={darkMode ? "#fff" : "#333"}
-              />
-            </TouchableOpacity>
-          )}
         </View>
       )}
 
       <FlatList
         data={filteredPoems}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item, index }) => (
-          <Animatable.View animation="fadeInUp" delay={index * 50}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Reader", { poem: item })}
-            >
-              <Text
-                style={[
-                  styles.poemTitle,
-                  darkMode && { color: "#fff", borderColor: "#444" },
-                ]}
-              >
-                {item.title}
-              </Text>
-            </TouchableOpacity>
-          </Animatable.View>
-        )}
+        keyExtractor={(item) => item.displayId}
+        renderItem={renderItem}
+        contentContainerStyle={styles.listContainer}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 10, paddingTop: 40 },
-  headerRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  header: {
-    fontSize: 22,
-    fontWeight: "bold",
-  },
-  searchContainer: {
+  container: { flex: 1 },
+  searchBox: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 15,
+    margin: 15,
+    paddingHorizontal: 15,
+    height: 45,
+    borderRadius: 10,
+    borderWidth: 1,
   },
   searchInput: {
     flex: 1,
-    height: 40,
-    borderColor: "#aaa",
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
+    marginLeft: 10,
+    fontSize: 16,
   },
-  clearBtn: {
-    marginLeft: 8,
+  listContainer: {
+    paddingHorizontal: 15,
   },
-  poemTitle: {
-    fontSize: 18,
-    paddingVertical: 8,
+  itemRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 18,
     borderBottomWidth: 1,
-    borderColor: "#ccc",
+  },
+  rowIcon: {
+    marginRight: 15,
+  },
+  itemTitle: {
+    flex: 1,
+    fontSize: 17,
+    fontWeight: "500",
   },
 });

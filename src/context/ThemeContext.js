@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { LayoutAnimation, Platform, UIManager } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { COLORS, SIZES, FONTS } from '../constants/Theme';
 
 // Enable LayoutAnimation for Android
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -18,7 +19,6 @@ export function ThemeProvider({ children }) {
       try {
         const stored = await AsyncStorage.getItem('darkMode');
         if (stored !== null) {
-          // No animation on initial load to avoid flash
           setDarkMode(stored === 'true');
         }
       } catch (e) {
@@ -33,7 +33,6 @@ export function ThemeProvider({ children }) {
   }, [darkMode]);
 
   const toggleDarkMode = () => {
-    // Configure the animation for the theme change
     LayoutAnimation.configureNext({
       duration: 500,
       create: { type: 'easeInEaseOut', property: 'opacity' },
@@ -43,8 +42,10 @@ export function ThemeProvider({ children }) {
     setDarkMode((prev) => !prev);
   };
 
+  const theme = darkMode ? COLORS.dark : COLORS.light;
+
   return (
-    <ThemeContext.Provider value={{ darkMode, toggleDarkMode }}>
+    <ThemeContext.Provider value={{ darkMode, theme, SIZES, FONTS, toggleDarkMode }}>
       {children}
     </ThemeContext.Provider>
   );

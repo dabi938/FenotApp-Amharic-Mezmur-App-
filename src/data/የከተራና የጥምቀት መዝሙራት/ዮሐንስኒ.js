@@ -2,7 +2,7 @@ export default {
   id: 'ዮሐንስኒ',
   title: 'ዮሐንስኒ',
   category: 'የጥምቀትና የከተራ መዝሙራት',
-  audio: require('./ዮሐንስኒ.mp3'),
+  audio: require('./yohanesene.mp3'),
   content: [
     'ዮሐንስኒ ያጠምቅ/2/',
     'በሔኖን /3/ በማዕዶተ ዮርዳኖስ',

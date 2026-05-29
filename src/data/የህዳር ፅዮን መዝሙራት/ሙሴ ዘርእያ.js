@@ -2,7 +2,7 @@ export default {
   id: 'ሙሴ ዘርእያ',
   title: 'ሙሴ ዘርእያ',
   category: 'የህዳር ፅዮን መዝመራት',
-  audio: require('./ሙሴ ዘርዕየ.m4a'),
+  audio: require('./muse_zereye.m4a'),
   content: [
     'ሙሴ ዘርእያ/2/ በደብረ ሲና /2/',
     'ሐመልማላዊት ዕፅ ሐመልማላዊት /2/',

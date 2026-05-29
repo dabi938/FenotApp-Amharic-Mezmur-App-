@@ -1,44 +1,57 @@
-// src/screens/FavoritesScreen.js
 import React, { useLayoutEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { useFavorites } from '../context/FavoritesContext';
 import { useTheme } from '../context/ThemeContext';
+import { Ionicons } from '@expo/vector-icons';
+import * as Animatable from 'react-native-animatable';
 
 export default function FavoritesScreen({ navigation }) {
   const { favorites } = useFavorites();
-  const { darkMode } = useTheme();
+  const { theme } = useTheme();
 
   useLayoutEffect(() => {
     navigation.setOptions({
       title: 'Favorites',
       headerStyle: {
-        backgroundColor: darkMode ? '#111' : '#fff',
+        backgroundColor: theme.background,
       },
-      headerTintColor: darkMode ? '#fff' : '#222',
+      headerTintColor: theme.text,
       headerTitleStyle: {
-        color: darkMode ? '#fff' : '#222',
+        fontWeight: 'bold',
       },
     });
-  }, [navigation, darkMode]);
+  }, [navigation, theme]);
+
+  const renderItem = ({ item, index }) => (
+    <Animatable.View animation="fadeInRight" delay={index * 30}>
+      <TouchableOpacity
+        activeOpacity={0.6}
+        onPress={() => navigation.navigate('Reader', { poem: item, poems: favorites })}
+        style={[styles.itemRow, { borderBottomColor: theme.border }]}
+      >
+        <Ionicons name="heart" size={20} color="#e91e63" style={styles.rowIcon} />
+        <View style={styles.textContainer}>
+            <Text style={[styles.poemTitle, { color: theme.text }]}>
+              {item.displayId}. {item.title}
+            </Text>
+            <Text style={[styles.category, { color: theme.textSecondary }]}>{item.category}</Text>
+        </View>
+        <Ionicons name="chevron-forward" size={16} color={theme.textSecondary} />
+      </TouchableOpacity>
+    </Animatable.View>
+  );
 
   return (
-    <View style={[styles.container, darkMode && { backgroundColor: '#111' }]}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       <FlatList
         data={favorites}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.row}
-            onPress={() => navigation.navigate('Reader', { poem: item, poems: favorites })}
-          >
-            <Text style={[styles.favoriteIcon, darkMode && { color: '#ffd700' }]}>❤️</Text>
-            <Text style={[styles.poemTitle, darkMode && { color: '#fff', borderColor: '#444' }]}>
-              {item.title}
-            </Text>
-          </TouchableOpacity>
-        )}
+        keyExtractor={(item) => item.displayId}
+        renderItem={renderItem}
+        contentContainerStyle={styles.listContainer}
         ListEmptyComponent={
-          <Text style={[styles.emptyText, darkMode && { color: '#aaa' }]}>No favorite mezmur yet.</Text>
+          <View style={styles.emptyView}>
+            <Text style={{ color: theme.textSecondary }}>No favorite hymns yet.</Text>
+          </View>
         }
       />
     </View>
@@ -46,26 +59,33 @@ export default function FavoritesScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
-  row: {
+  container: { flex: 1 },
+  listContainer: {
+    paddingHorizontal: 15,
+  },
+  itemRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 10,
-    borderBottomColor: '#aaa',
+    paddingVertical: 15,
     borderBottomWidth: 1,
   },
-  favoriteIcon: {
-    fontSize: 22,
-    marginRight: 12,
+  rowIcon: {
+    marginRight: 15,
   },
-  poemTitle: {
-    fontSize: 18,
+  textContainer: {
     flex: 1,
   },
-  emptyText: {
-    fontSize: 16,
-    color: '#999',
-    marginTop: 50,
-    textAlign: 'center',
+  poemTitle: {
+    fontSize: 17,
+    fontWeight: '500',
   },
+  category: {
+    fontSize: 12,
+    marginTop: 2,
+    opacity: 0.7,
+  },
+  emptyView: {
+    alignItems: 'center',
+    marginTop: 100,
+  }
 });

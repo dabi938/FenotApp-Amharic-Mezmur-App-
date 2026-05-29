@@ -20,7 +20,7 @@ import * as Faarfannaa_Afaan_oromoo from './Faarfannaa Afaan oromoo';
 import * as የወረብ_ዝማሬያት from './የወረብ ዝማሬያት';
 
 
-export const poems = [
+const rawPoems = [
   ...Object.values(የአዲስ_ዓመት_መዝሙራት),
   ...Object.values(የመስከረም10_መዝሙራት),
   ...Object.values(የመስቀል_መዝሙራት),
@@ -41,7 +41,23 @@ export const poems = [
   ...Object.values(የደብረ_ታቦር_መዝሙራት),
   // ...Object.values(Faarfannaa_Afaan_oromoo),
   // ...Object.values(የወረብ_ዝማሬያት),
+].filter(Boolean);
 
-].filter(Boolean); // This removes null/undefined poems
+let currentCategory = null;
+let categoryIndex = -1;
+let indexInCategory = 0;
 
-export const categories = [...new Set(poems.map(p => p.category).filter(Boolean))];
+export const poems = rawPoems.map((poem) => {
+  if (poem.category !== currentCategory) {
+    currentCategory = poem.category;
+    categoryIndex++;
+    indexInCategory = 1;
+  } else {
+    indexInCategory++;
+  }
+  const assignedNumber = categoryIndex * 200 + indexInCategory;
+  const formattedNumber = assignedNumber.toString();
+  return { ...poem, displayId: formattedNumber };
+});
+
+export const categories = [...new Set(poems.map((p) => p.category).filter(Boolean))];
